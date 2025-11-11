@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
       - name: GitHub Action for DigitalOcean - doctl
-        uses: digitalocean/action-doctl@v2.5.0
+        uses: digitalocean/action-doctl@v2.5.1
         with:
           token: ${{ secrets.DIGITALOCEAN_PIBOX_ACCESS_TOKEN }}
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
