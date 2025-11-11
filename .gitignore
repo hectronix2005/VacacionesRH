@@ -37,4 +37,3 @@
 !/app/assets/builds/.keep
 .idea
 .byebug_history
-Gemfile.lock
