@@ -1,0 +1,30 @@
+# CODEOWNERS
+# Estas personas serán automáticamente solicitadas para revisión de PRs
+
+# Regla por defecto: todo el código requiere revisión del dueño principal
+* @hectronix2005
+
+# Configuración de deployment y CI/CD
+/config/deploy.yml @hectronix2005
+/.github/workflows/* @hectronix2005
+/.kamal/* @hectronix2005
+/Dockerfile @hectronix2005
+/config/environments/production.rb @hectronix2005
+
+# Migraciones de base de datos (críticas)
+/db/migrate/* @hectronix2005
+/db/schema.rb @hectronix2005
+
+# Modelos críticos del negocio
+/app/models/user.rb @hectronix2005
+/app/models/vacation_request.rb @hectronix2005
+/app/models/vacation_balance.rb @hectronix2005
+/app/models/vacation_approval.rb @hectronix2005
+
+# Configuración de seguridad
+/config/initializers/session_store.rb @hectronix2005
+/.rubocop.yml @hectronix2005
+
+# Dependencias
+/Gemfile @hectronix2005
+/Gemfile.lock @hectronix2005

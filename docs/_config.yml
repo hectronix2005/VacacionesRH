@@ -1,0 +1,8 @@
+theme: jekyll-theme-cayman
+title: PicapRh Documentation
+description: Sistema de Gestión de Vacaciones para empresas colombianas y mexicanas
+show_downloads: true
+google_analytics:
+github:
+  repository_url: https://github.com/hectronix2005/VacacionesRH
+  is_project_page: true

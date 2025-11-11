@@ -1,5 +1,11 @@
 # PicapRh - Sistema de Gestión de Vacaciones
 
+[![CI Status](https://github.com/hectronix2005/VacacionesRH/actions/workflows/ci.yml/badge.svg)](https://github.com/hectronix2005/VacacionesRH/actions/workflows/ci.yml)
+[![Ruby Version](https://img.shields.io/badge/ruby-3.4.5-red.svg)](https://www.ruby-lang.org)
+[![Rails Version](https://img.shields.io/badge/rails-8.0.4-red.svg)](https://rubyonrails.org)
+[![License](https://img.shields.io/badge/license-Private-blue.svg)]()
+[![Deployment](https://img.shields.io/badge/deployed%20on-Heroku-430098.svg)](https://vacacionesrh.herokuapp.com)
+
 **PicapRh** es un sistema integral de gestión de vacaciones desarrollado en Ruby on Rails 8.0.2, diseñado específicamente para empresas colombianas y mexicanas. El sistema maneja flujos de trabajo de aprobación multinivel para solicitudes de vacaciones, soporta diferentes terminologías de vacaciones por país y proporciona control de acceso basado en roles.
 
 ## 🌟 Características Principales
