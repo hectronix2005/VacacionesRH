@@ -40,16 +40,16 @@ production:
     url: <%= ENV['DATABASE_URL'] %>
   cache:
     <<: *default
-    database: <%= ENV.fetch("DB_CACHE_DATABASE") { "cache_" + ENV['DATABASE_URL'].to_s.split('/').last } %>
+    database: <%= ENV.fetch("DB_CACHE_DATABASE") { ENV['DATABASE_URL'] ? "cache_" + ENV['DATABASE_URL'].split('/').last : "picap_rh_db_cache" } %>
     url: <%= ENV['DATABASE_URL'] %>
     migrations_paths: db/migrate
   queue:
     <<: *default
-    database: <%= ENV.fetch("DB_QUEUE_DATABASE") { "queue_" + ENV['DATABASE_URL'].to_s.split('/').last } %>
+    database: <%= ENV.fetch("DB_QUEUE_DATABASE") { ENV['DATABASE_URL'] ? "queue_" + ENV['DATABASE_URL'].split('/').last : "picap_rh_db_queue" } %>
     url: <%= ENV['DATABASE_URL'] %>
     migrations_paths: db/migrate
   cable:
     <<: *default
-    database: <%= ENV.fetch("DB_CABLE_DATABASE") { "cable_" + ENV['DATABASE_URL'].to_s.split('/').last } %>
+    database: <%= ENV.fetch("DB_CABLE_DATABASE") { ENV['DATABASE_URL'] ? "cable_" + ENV['DATABASE_URL'].split('/').last : "picap_rh_db_cable" } %>
     url: <%= ENV['DATABASE_URL'] %>
     migrations_paths: db/migrate
