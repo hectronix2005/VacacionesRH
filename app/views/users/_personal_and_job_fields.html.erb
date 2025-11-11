@@ -1,0 +1,239 @@
+<!-- Campos de Información Personal y Laboral para formularios de usuario -->
+
+<!-- Información Personal -->
+<div class="space-y-4">
+  <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+    Información Personal
+  </h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <%= form.label :document_number, "Número de Documento *", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_field :document_number,
+                         placeholder: (defined?(placeholder_document_number) ? placeholder_document_number : nil),
+                         class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm",
+                          disabled: ([:hr, :admin] & current_user.active_roles).blank?
+      %>
+      <p class="mt-1 text-xs text-gray-500">Cédula de ciudadanía o documento de identificación</p>
+    </div>
+
+    <div>
+      <%= form.label :name, "Nombre Completo *", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_field :name,
+                         placeholder: (defined?(placeholder_name) ? placeholder_name : nil),
+                         class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+    </div>
+
+    <div>
+      <%= form.label :email, "Correo Electrónico *", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.email_field :email,
+                          placeholder: "usuario@empresa.com",
+                          class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+      <p class="mt-1 text-xs text-gray-500">Dirección de correo electrónico corporativa</p>
+    </div>
+
+    <div>
+      <%= form.label :phone, "Teléfono *", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_field :phone,
+                         placeholder: (defined?(placeholder_phone) ? placeholder_phone : nil),
+                         class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+    </div>
+  </div>
+</div>
+
+<!-- Información Laboral -->
+<div class="space-y-4">
+  <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+    Información Laboral
+  </h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <%= form.label :area_id, "Área/Departamento *", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.select :area_id,
+                     options_from_collection_for_select(@areas, :id, :name, @user.area_id),
+                     { prompt: "Selecciona un área" },
+                     { class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" } %>
+      <p class="mt-1 text-xs text-gray-500">Área o departamento al que pertenece el empleado</p>
+    </div>
+
+    <div>
+      <%= form.label :hire_date, "Fecha de ingreso", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.date_field :hire_date,
+                          class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+    </div>
+  </div>
+
+  <% if current_user.admin? || current_user.hr? %>
+    <div>
+      <%= form.label :position, "Cargo/Puesto", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_field :position, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+      <p class="mt-1 text-xs text-gray-500">Cargo o puesto del usuario en la empresa</p>
+    </div>
+    <div>
+      <%= form.label :company, "Empresa", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_field :company, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+      <p class="mt-1 text-xs text-gray-500">Nombre de la empresa a la que pertenece el usuario</p>
+    </div>
+    <div>
+      <%= form.label :country_id, "País *", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.select :country_id,
+                      options_from_collection_for_select(@countries, :id, :name, @user.country_id),
+                      { prompt: "Selecciona un país" },
+                      { class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" } %>
+      <% if @user.country&.name == 'México' %>
+        <p class="mt-1 text-xs text-orange-600">⚠️ Este usuario usa "días de descanso" en lugar de vacaciones</p>
+      <% else %>
+        <p class="mt-1 text-xs text-gray-500">Esto determina el tipo de beneficios (vacaciones/días de descanso)</p>
+      <% end %>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <%= render 'users/roles_fields', form: form %>
+      </div>
+
+      <div>
+        <%= form.label :lead_id, "Líder Directo", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.select :lead_id,
+                       options_from_collection_for_select(@leaders, :id, :name, @user.lead_id),
+                       { prompt: "Sin líder asignado", include_blank: true },
+                       { class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" } %>
+        <p class="mt-1 text-xs text-gray-500">Opcional: Solo para empleados que reportan a un líder</p>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Días Laborales Personalizados -->
+<div class="space-y-4">
+  <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+    Días Laborales
+  </h3>
+
+  <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <div class="ml-3">
+        <p class="text-sm text-blue-800">
+          <strong>Configuración por defecto:</strong> El usuario heredará los días laborales del país (<%= @user.country&.name || 'no definido' %>).
+          Si necesita un horario diferente (por ejemplo, trabajar sábados), puedes personalizarlo aquí.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white border border-gray-200 rounded-lg p-4">
+    <div class="flex items-center is-justify-content-start mb-4">
+      <%= form.label :has_custom_working_days, "¿Este usuario tiene días laborales diferentes al país?", class: "text-sm font-medium text-gray-900" %>
+      <%= form.check_box :has_custom_working_days,
+                         { class: "h-4 w-4 m-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500",
+                           onchange: "toggleCustomWorkingDays()" },
+                         true, false %>
+    </div>
+
+    <div id="custom_working_days_section" class="<%= 'hidden' unless @user.has_custom_working_days? %>">
+      <p class="text-sm text-gray-600 mb-4">
+        Selecciona los días en los que este usuario trabaja normalmente:
+      </p>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+        <%= form.fields_for :working_days do |wd| %>
+          <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+            <% day_name = {
+              'monday' => 'Lunes',
+              'tuesday' => 'Martes',
+              'wednesday' => 'Miércoles',
+              'thursday' => 'Jueves',
+              'friday' => 'Viernes',
+              'saturday' => 'Sábado',
+              'sunday' => 'Domingo'
+            }[day] %>
+
+            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+              <%= wd.hidden_field day.to_sym, value: false %>
+              <%= wd.check_box day.to_sym,
+                              { class: "h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500",
+                                id: "working_days_#{day}",
+                                checked: @user.working_days[day] },
+                              true, false %>
+              <span class="ml-2 text-sm text-gray-900"><%= day_name %></span>
+            </label>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+        <p class="text-sm text-yellow-800">
+          <strong>Nota importante:</strong> Cambiar los días laborales afectará el cálculo de días hábiles para futuras solicitudes de vacaciones.
+          Las solicitudes existentes no se verán afectadas.
+        </p>
+      </div>
+    </div>
+
+    <div id="country_working_days_info" class="<%= 'hidden' if @user.has_custom_working_days? %>">
+      <p class="text-sm text-gray-600">
+        <strong>Días laborales actuales (heredados del país):</strong>
+      </p>
+      <div class="mt-2 flex flex-wrap gap-2">
+        <% if @user.country&.working_days %>
+          <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+            <% if @user.country.working_days[day] %>
+              <% day_name = {
+                'monday' => 'Lun',
+                'tuesday' => 'Mar',
+                'wednesday' => 'Mié',
+                'thursday' => 'Jue',
+                'friday' => 'Vie',
+                'saturday' => 'Sáb',
+                'sunday' => 'Dom'
+              }[day] %>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <%= day_name %>
+              </span>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleCustomWorkingDays() {
+  const checkbox = document.getElementById('user_has_custom_working_days');
+  const customSection = document.getElementById('custom_working_days_section');
+  const countryInfo = document.getElementById('country_working_days_info');
+
+  if (checkbox.checked) {
+    customSection.classList.remove('hidden');
+    countryInfo.classList.add('hidden');
+  } else {
+    customSection.classList.add('hidden');
+    countryInfo.classList.remove('hidden');
+    // Clear all working days checkboxes when unchecked
+    const checkboxes = document.querySelectorAll('[id^="working_days_"]');
+    checkboxes.forEach(cb => cb.checked = false);
+  }
+}
+</script>
+
+<% content_for :password_fields do %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <%= form.label :password, "Nueva Contraseña", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.password_field :password,
+                              class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+    </div>
+
+    <div>
+      <%= form.label :password_confirmation, "Confirmar Nueva Contraseña", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.password_field :password_confirmation,
+                              class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+    </div>
+  </div>
+<% end %>

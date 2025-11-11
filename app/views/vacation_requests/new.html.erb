@@ -1,0 +1,146 @@
+<div class="min-h-screen bg-gray-50 py-6">
+  <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <nav class="flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4">
+          <li>
+            <%= link_to "Dashboard", root_path,
+                        class: "text-gray-400 hover:text-gray-500" %>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+              <%= link_to "Mis Solicitudes", vacation_requests_path,
+                          class: "ml-4 text-gray-400 hover:text-gray-500" %>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span class="ml-4 text-sm font-medium text-gray-500">Nueva Solicitud</span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+
+      <div class="mt-4">
+        <h1 class="text-3xl font-bold text-gray-900">
+          Nueva Solicitud de <%= current_user.vacation_term.titleize %>
+        </h1>
+        <p class="mt-1 text-sm text-gray-600">
+          Crea una nueva solicitud para tomar tus días de <%= current_user.vacation_term %>
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Form -->
+      <div class="lg:col-span-2">
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-6 py-5 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Detalles de la Solicitud</h3>
+            <p class="mt-1 text-sm text-gray-500">
+              Completa la información para tu solicitud de <%= current_user.vacation_term %>
+            </p>
+          </div>
+          
+          <%= render "form", vacation_request: @vacation_request %>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="lg:col-span-1">
+        <!-- Balance Info -->
+        <div class="bg-white shadow rounded-lg mb-6">
+          <div class="px-6 py-5 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Tu Balance</h3>
+          </div>
+          <div class="px-6 py-5">
+            <% if @current_balance %>
+              <div class="text-center">
+                <div class="text-3xl font-bold text-blue-600">
+                  <%= @current_balance.days_available %>
+                </div>
+                <div class="text-sm text-gray-500 mb-4">
+                  días disponibles
+                </div>
+                
+                <div class="text-xs text-gray-500">
+                  <div class="flex justify-between">
+                    <span>Usados: <%= @current_balance.used_days %></span>
+                    <span>Disponibles: <%= @current_balance.available_days %></span>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <div class="text-center text-gray-500">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3 6-6 6 6 3-3V8M6 20h36"/>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">Sin balance asignado</h3>
+                <p class="mt-1 text-sm text-gray-500">Contacta a Recursos Humanos para que te asignen días de <%= current_user.vacation_term %>.</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-6 py-5 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Consejos</h3>
+          </div>
+          <div class="px-6 py-5">
+            <ul class="space-y-4 text-sm text-gray-600">
+              <li class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <span class="font-medium">Planifica con anticipación:</span> Envía tu solicitud con suficiente tiempo de antelación.
+                </div>
+              </li>
+              <li class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <span class="font-medium">Días consecutivos:</span> Los días de <%= current_user.vacation_term %> incluyen fines de semana.
+                </div>
+              </li>
+              <li class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <span class="font-medium">Seguimiento:</span> Puedes ver el estado de tus solicitudes en cualquier momento.
+                </div>
+              </li>
+              <li class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <span class="font-medium">Cancelación:</span> Solo puedes cancelar solicitudes pendientes.
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

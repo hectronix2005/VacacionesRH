@@ -1,0 +1,99 @@
+<div class="min-h-screen bg-gray-50 py-6">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <nav class="flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4">
+          <li>
+            <%= link_to "Dashboard", dashboard_path,
+                        class: "text-gray-400 hover:text-gray-500" %>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+              <%= link_to "Gestión de Áreas", areas_path,
+                          class: "ml-4 text-gray-400 hover:text-gray-500" %>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span class="ml-4 text-sm font-medium text-gray-500">Nueva Área</span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+
+      <div class="mt-4">
+        <h1 class="text-3xl font-bold text-gray-900">Nueva Área</h1>
+        <p class="mt-1 text-sm text-gray-600">
+          Crea una nueva área o departamento para organizar a los empleados
+        </p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white shadow-sm rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <%= form_with model: @area, local: true do |form| %>
+          <div class="space-y-6">
+            <!-- Area Name -->
+            <div>
+              <%= form.label :name, "Nombre del Área *", class: "block text-sm font-medium text-gray-700" %>
+              <div class="mt-1">
+                <%= form.text_field :name,
+                                   placeholder: "Ej: Tecnología, Recursos Humanos, Ventas, Marketing",
+                                   class: "block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm #{'border-red-300' if @area.errors[:name].any?}",
+                                   required: true %>
+              </div>
+              <% if @area.errors[:name].any? %>
+                <p class="mt-2 text-sm text-red-600">
+                  <%= @area.errors[:name].first %>
+                </p>
+              <% else %>
+                <p class="mt-2 text-sm text-gray-500">
+                  Ingresa un nombre descriptivo para el área o departamento. Este nombre será visible para todos los usuarios.
+                </p>
+              <% end %>
+            </div>
+
+            <!-- Info Box -->
+            <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-blue-800">
+                    Información importante
+                  </h3>
+                  <div class="mt-2 text-sm text-blue-700">
+                    <ul class="list-disc pl-5 space-y-1">
+                      <li>Una vez creada, podrás asignar empleados a esta área</li>
+                      <li>El nombre del área aparecerá en los reportes y filtros</li>
+                      <li>Solo podrás eliminar áreas que no tengan empleados asignados</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="mt-8 flex justify-end space-x-3">
+            <%= link_to "Cancelar", areas_path,
+                        class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+            <%= form.submit "Crear Área",
+                           class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

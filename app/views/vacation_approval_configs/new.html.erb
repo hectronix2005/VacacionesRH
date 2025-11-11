@@ -1,0 +1,88 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Nueva Configuración de Aprobación</h1>
+    <p class="text-gray-600">Configura un nuevo rol para el proceso de aprobaciones</p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h2 class="text-lg font-semibold">Detalles de la Configuración</h2>
+    </div>
+
+    <div class="p-6">
+      <%= form_with model: @config, local: true, class: "space-y-6" do |form| %>
+        <% if @config.errors.any? %>
+          <div class="bg-red-50 border border-red-200 rounded-md p-4">
+            <div class="flex">
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                  Se encontraron <%= pluralize(@config.errors.count, "error") %>:
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <ul class="list-disc pl-5 space-y-1">
+                    <% @config.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <%= form.label :role, "Rol", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.select :role,
+                options_for_select(@available_roles.map { |role| [I18n.t("users.roles.#{role}", default: role.humanize), role] }),
+                { prompt: "Selecciona un rol" },
+                { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+          </div>
+
+          <div>
+            <%= form.label :order_position, "Orden", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.number_field :order_position,
+                class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500",
+                min: 1, value: @config.order_position || 1 %>
+            <p class="mt-1 text-sm text-gray-500">Orden en el flujo de aprobación</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <%= form.label :minimum_approvals, "Mínimo de Aprobaciones", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.number_field :minimum_approvals,
+                class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500",
+                min: 1, value: @config.minimum_approvals || 1 %>
+            <p class="mt-1 text-sm text-gray-500">Cuántas aprobaciones se necesitan de este rol</p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <%= form.check_box :required, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" %>
+              <%= form.label :required, "Requerido", class: "ml-2 block text-sm text-gray-900" %>
+            </div>
+            <div class="flex items-center">
+              <%= form.check_box :active, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded", checked: true %>
+              <%= form.label :active, "Activo", class: "ml-2 block text-sm text-gray-900" %>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <%= form.label :description, "Descripción", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.text_area :description, rows: 3,
+              class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500",
+              placeholder: "Describe cuándo y cómo se aplica esta configuración" %>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-6 border-t">
+          <%= link_to "Cancelar", vacation_approval_configs_path,
+              class: "bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          <%= form.submit "Crear Configuración",
+              class: "bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

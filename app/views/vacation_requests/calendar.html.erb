@@ -1,0 +1,185 @@
+<% content_for :title, "Calendario de Vacaciones" %>
+
+<div class="max-w-7xl mx-auto">
+  <!-- Header con navegación y estadísticas -->
+  <div class="bg-white shadow rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">Calendario de Vacaciones</h1>
+          <p class="text-gray-600">
+            <%= Date::MONTHNAMES[@month] %> <%= @year %>
+          </p>
+        </div>
+        
+        <!-- Navegación del calendario -->
+        <div class="flex items-center space-x-3 mt-4 sm:mt-0">
+          <%= link_to calendar_vacation_requests_path(year: @prev_year, month: @prev_month),
+                      class: "inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" do %>
+            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Anterior
+          <% end %>
+          
+          <%= link_to calendar_vacation_requests_path(year: Date.current.year, month: Date.current.month),
+                      class: "inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" do %>
+            Hoy
+          <% end %>
+          
+          <%= link_to calendar_vacation_requests_path(year: @next_year, month: @next_month),
+                      class: "inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" do %>
+            Siguiente
+            <svg class="h-4 w-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          <% end %>
+        </div>
+      </div>
+      
+      <!-- Estadísticas del mes -->
+      <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div class="bg-blue-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-blue-500 truncate">Total Solicitudes</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @stats[:total_requests] %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-green-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-green-500 truncate">Empleados de Vacaciones</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @stats[:employees_on_vacation] %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-purple-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-6 w-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a4 4 0 118 0v4m-8 0h8m-8 0V7a4 4 0 114 0m4 0V7a4 4 0 114 0m-8 0h8" />
+                </svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-purple-500 truncate">Total Días</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @stats[:days_requested] %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leyenda -->
+  <div class="bg-white shadow rounded-lg mb-6">
+    <div class="px-4 py-3 sm:p-4">
+      <div class="flex flex-wrap items-center justify-between">
+        <h3 class="text-sm font-medium text-gray-900 mb-2 sm:mb-0">Leyenda:</h3>
+        <div class="flex flex-wrap items-center space-x-4">
+          <div class="flex items-center">
+            <div class="w-3 h-3 bg-green-200 border border-green-300 rounded mr-2"></div>
+            <span class="text-xs text-gray-600">Aprobadas</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-3 h-3 bg-blue-200 border border-blue-300 rounded mr-2"></div>
+            <span class="text-xs text-gray-600">Tomadas</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-3 h-3 bg-gray-200 border border-gray-300 rounded mr-2"></div>
+            <span class="text-xs text-gray-600">Hoy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendario -->
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="grid grid-cols-7 gap-px bg-gray-200">
+      <!-- Encabezados de días -->
+      <% %w[Domingo Lunes Martes Miércoles Jueves Viernes Sábado].each do |day_name| %>
+        <div class="bg-gray-50 py-2">
+          <div class="text-xs font-semibold text-gray-900 text-center uppercase tracking-wide">
+            <%= day_name[0..2] %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Días del calendario -->
+      <% 
+        start_date = Date.new(@year, @month, 1)
+        end_date = start_date.end_of_month
+        
+        # Calcular el primer día a mostrar (puede ser del mes anterior)
+        first_day_to_show = start_date.beginning_of_week(:sunday)
+        
+        # Calcular el último día a mostrar (puede ser del mes siguiente)  
+        last_day_to_show = end_date.end_of_week(:sunday)
+        
+        (first_day_to_show..last_day_to_show).each do |date|
+          is_current_month = date.month == @month
+          is_today = date == Date.current
+          vacations_today = @vacation_days[date] || []
+      %>
+        <div class="<%= is_current_month ? 'bg-white' : 'bg-gray-50' %> min-h-[120px] py-2 px-3 relative">
+          <!-- Número del día -->
+          <div class="flex justify-between items-start mb-1">
+            <span class="text-sm <%= is_current_month ? 'text-gray-900' : 'text-gray-400' %> <%= is_today ? 'font-bold' : '' %>">
+              <%= date.day %>
+            </span>
+            <% if is_today %>
+              <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+            <% end %>
+          </div>
+
+          <!-- Vacaciones del día -->
+          <div class="space-y-1">
+            <% vacations_today.each do |vacation| %>
+              <a href="<%= vacation_request_path(vacation) %>" class="cursor-pointer hover:opacity-75" >
+                <div class="text-xs p-1 rounded <%= vacation.taken? ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-green-100 text-green-800 border border-green-200' %> cursor-pointer hover:opacity-75"
+                     title="<%= vacation.user.name %>">
+                  <div class="font-medium"><%= vacation.user.name.split.first %></div>
+                  <% if vacation.start_date == vacation.end_date %>
+                    <div class="opacity-75">1 día</div>
+                  <% elsif vacation.start_date == date %>
+                    <div class="opacity-75">Inicia</div>
+                  <% elsif vacation.end_date == date %>
+                    <div class="opacity-75">Termina</div>
+                  <% else %>
+                    <div class="opacity-75">Continúa</div>
+                  <% end %>
+                </div>
+              </a>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

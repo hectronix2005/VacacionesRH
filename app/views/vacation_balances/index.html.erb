@@ -1,0 +1,233 @@
+<div class="min-h-screen bg-gray-50 py-6">
+  <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">
+            Balances de Vacaciones
+          </h1>
+          <p class="mt-1 text-sm text-gray-600">
+            Gestiona los balances de vacaciones de todos los empleados
+          </p>
+        </div>
+        <div class="flex space-x-3">
+          <%= link_to "Nuevo Balance", new_vacation_balance_path,
+                      class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          <%= button_to "Recalcular Todos", recalculate_all_vacation_balances_path(year: @year),
+                        method: :post,
+                        confirm: "¿Estás seguro de que quieres recalcular todos los balances para #{@year}?",
+                        class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="mb-6 bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Filtros</h3>
+        <%= form_with url: vacation_balances_path, method: :get, local: true, class: "grid grid-cols-1 md:grid-cols-4 gap-4" do |form| %>
+          <div>
+            <%= form.label :year, "Año", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.select :year,
+                           options_for_select(@years.map { |y| [y.to_s, y] }, @year),
+                           { prompt: "Seleccionar año" },
+                           { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" } %>
+          </div>
+          <div>
+            <%= form.label :user_ids, "Usuario", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.select :user_ids,
+                            [],
+                            {multiple: true},
+                            {
+                              class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm",
+                              data: {
+                                controller: "tom-select",
+                                tom_select_url_value: search_users_path,
+                                tom_select_placeholder_value: "Buscar usuario...",
+                              }
+                            } %>
+          </div>
+
+          <div>
+            <%= form.label :status, "Estado", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.select :status,
+                           options_for_select([
+                             ['Todos', ''],
+                             ['Con días disponibles', 'with_available'],
+                             ['Sobre el límite', 'over_limit']
+                           ], params[:status]),
+                           {},
+                           { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" } %>
+          </div>
+
+          <div class="flex items-end">
+            <%= form.submit "Filtrar", class: "w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                <span class="text-white text-sm font-medium"><%= @vacation_balances.count %></span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Total Balances</dt>
+                <dd class="text-lg font-medium text-gray-900"><%= @vacation_balances.count %></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+                <span class="text-white text-sm font-medium">✓</span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Con Días Disponibles</dt>
+                <dd class="text-lg font-medium text-gray-900"><%= @vacation_balances.with_available_days.count %></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
+                <span class="text-white text-sm font-medium">!</span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Sobre Límite</dt>
+                <dd class="text-lg font-medium text-gray-900"><%= @vacation_balances.over_limit.count %></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
+                <span class="text-white text-sm font-medium"><%= @year %></span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Año Actual</dt>
+                <dd class="text-lg font-medium text-gray-900"><%= @year %></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
+      <% if @vacation_balances.any? %>
+        <ul role="list" class="divide-y divide-gray-200">
+          <% @vacation_balances.each do |balance| %>
+            <li>
+              <div class="px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                      <span class="text-sm font-medium text-gray-700">
+                        <%= balance.user.name.first.upcase %>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <div class="flex items-center">
+                      <div class="text-sm font-medium text-gray-900">
+                        <%= balance.user.full_name %>
+                      </div>
+                      <div class="ml-2">
+                        <% if balance.used_days > balance.days_available %>
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Sobre límite
+                          </span>
+                        <% elsif balance.available_days > 0 %>
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Días disponibles
+                          </span>
+                        <% else %>
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            Sin días
+                          </span>
+                        <% end %>
+                      </div>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      <%= balance.user.country.name %> • <%= render 'users/role_badges', user: current_user %>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center space-x-8">
+                  <div class="text-sm text-gray-900">
+                    <div class="font-medium">Total: <%= balance.days_available %> días</div>
+                    <div class="text-gray-500">Usados: <%= balance.used_days %> días</div>
+                  </div>
+                  <div class="text-sm text-gray-900">
+                    <div class="font-medium text-<%= balance.available_days >= 0 ? 'green' : 'red' %>-600">
+                      Disponibles: <%= balance.available_days %> días
+                    </div>
+                  </div>
+
+                  <div class="flex items-center space-x-2">
+                    <%= link_to "Ver", vacation_balance_path(balance),
+                                class: "text-blue-600 hover:text-blue-900 text-sm font-medium" %>
+                    <%= link_to "Editar", edit_vacation_balance_path(balance),
+                                class: "text-yellow-600 hover:text-yellow-900 text-sm font-medium" %>
+                    <%= link_to "Eliminar", vacation_balance_path(balance),
+                                method: :delete,
+                                confirm: "¿Estás seguro de que quieres eliminar este balance?",
+                                class: "text-red-600 hover:text-red-900 text-sm font-medium" %>
+                  </div>
+                </div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+
+        <!-- Pagination -->
+        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+          <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+        </div>
+      <% else %>
+        <div class="text-center py-12">
+          <div class="text-gray-500">
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No hay balances</h3>
+            <p class="mt-1 text-sm text-gray-500">No se encontraron balances de vacaciones para los filtros seleccionados.</p>
+            <div class="mt-6">
+              <%= link_to "Crear nuevo balance", new_vacation_balance_path,
+                          class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

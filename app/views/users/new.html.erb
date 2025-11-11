@@ -1,0 +1,72 @@
+<div class="min-h-screen bg-gray-50 py-6">
+  <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">
+            Nuevo Usuario
+          </h1>
+          <p class="mt-1 text-sm text-gray-600">
+            Crear un nuevo colaborador en el sistema
+          </p>
+        </div>
+        <%= link_to "← Volver", users_path,
+                    class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <%= form_with model: @user, local: true, class: "space-y-6" do |form| %>
+          <%= render 'shared/form_errors', object: @user %>
+
+          <!-- Información Personal y Laboral (Partial) -->
+          <%= render 'users/personal_and_job_fields', form: form, countries: @countries, leaders: @leaders, user: @user, placeholder_document_number: 'Ej: 12345678', placeholder_name: 'Ej: Juan Pérez García', placeholder_phone: 'Ej: +57 300 123 4567' %>
+
+          <!-- Credenciales de Acceso -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+              Credenciales de Acceso
+            </h3>
+
+            <%= yield :password_fields %>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+            <%= link_to "Cancelar", users_path,
+                        class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+            <%= form.submit "Crear Usuario",
+                           class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Help Text -->
+    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-md p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-blue-800">
+            Información Importante
+          </h3>
+          <div class="mt-2 text-sm text-blue-700">
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>Colombia:</strong> Se asignarán días de vacaciones según la legislación laboral</li>
+              <li><strong>México:</strong> Se asignarán días de descanso por contrato de prestación de servicios</li>
+              <li>El usuario recibirá automáticamente su balance de días para el año actual</li>
+              <li>Se enviará un correo con las credenciales de acceso (funcionalidad pendiente)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

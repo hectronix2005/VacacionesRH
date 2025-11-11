@@ -1,0 +1,16 @@
+<% if flash.any? %>
+  <div class="fixed top-10 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md">
+    <% flash.each_with_index do |(type, message), idx| %>
+      <% next if message.blank? %>
+      <% css = case type.to_sym
+        when :notice then 'bg-green-100 border-green-400 text-green-800'
+        when :alert then 'bg-red-100 border-red-400 text-red-800'
+        else 'bg-blue-100 border-blue-400 text-blue-800'
+      end %>
+      <div id="flash-msg-<%= idx %>" class="mb-2 border-l-4 p-4 rounded shadow-sm <%= css %> flex items-start justify-between">
+        <span class="block text-sm font-medium"><%= message %></span>
+        <button type="button" aria-label="Cerrar" class="ml-4 text-xl font-bold focus:outline-none text-gray-500 hover:text-gray-700" onclick="document.getElementById('flash-msg-<%= idx %>').style.display='none'">&times;</button>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,214 @@
+<div class="min-h-screen bg-gray-50 py-6">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <nav class="flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4">
+          <li>
+            <%= link_to "Dashboard", dashboard_path,
+                        class: "text-gray-400 hover:text-gray-500" %>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span class="ml-4 text-sm font-medium text-gray-500">Gestión de Áreas</span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+
+      <div class="mt-4 md:flex md:items-center md:justify-between">
+        <div class="flex-1 min-w-0">
+          <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            Gestión de Áreas
+          </h2>
+          <p class="mt-1 text-sm text-gray-600">
+            Administra las áreas y departamentos de la empresa
+          </p>
+        </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+          <%= link_to "Nueva Área", new_area_path,
+                      class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Total Áreas</dt>
+                <dd class="text-lg font-medium text-gray-900"><%= @areas.count %></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Total Empleados</dt>
+                <dd class="text-lg font-medium text-gray-900"><%= @areas.sum(&:users_count) %></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Empleados Activos</dt>
+                <dd class="text-lg font-medium text-gray-900"><%= @areas.sum(&:active_users_count) %></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Areas List -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
+      <% if @areas.any? %>
+        <ul role="list" class="divide-y divide-gray-200">
+          <% @areas.each do |area| %>
+            <li>
+              <div class="px-4 py-4 flex items-center justify-between sm:px-6 hover:bg-gray-50">
+                <div class="flex items-center min-w-0 flex-1">
+                  <div class="flex-shrink-0">
+                    <div class="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                      <span class="text-indigo-600 font-medium text-sm">
+                        <%= area.name.first.upcase %>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
+                    <div>
+                      <p class="text-sm font-medium text-indigo-600 truncate">
+                        <%= link_to area.name, area, class: "hover:text-indigo-800" %>
+                      </p>
+                      <p class="mt-2 flex items-center text-sm text-gray-500">
+                        <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                        <%= area.users_count %> empleado<%= area.users_count == 1 ? '' : 's' %>
+                        (<%= area.active_users_count %> activo<%= area.active_users_count == 1 ? '' : 's' %>)
+                      </p>
+                    </div>
+                    <div class="hidden md:block">
+                      <div>
+                        <p class="text-sm text-gray-900">
+                          Creada: <%= area.created_at.strftime("%d/%m/%Y") %>
+                        </p>
+                        <p class="mt-2 flex items-center text-sm text-gray-500">
+                          <% if area.users.any? %>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              En uso
+                            </span>
+                          <% else %>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                              Sin usuarios
+                            </span>
+                          <% end %>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <%= link_to "Ver", area, class: "text-indigo-600 hover:text-indigo-900 text-sm font-medium" %>
+                  <%= link_to "Editar", edit_area_path(area), class: "text-blue-600 hover:text-blue-900 text-sm font-medium" %>
+                  <%= link_to "Eliminar", area, method: :delete,
+                              confirm: "¿Estás seguro de que quieres eliminar el área '#{area.name}'?",
+                              class: "text-red-600 hover:text-red-900 text-sm font-medium" %>
+                </div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+
+        <!-- Pagination -->
+        <% if @pagy.pages > 1 %>
+          <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+            <div class="flex-1 flex justify-between sm:hidden">
+              <% if @pagy.prev %>
+                <%= link_to "Anterior", pagy_url_for(@pagy, @pagy.prev),
+                            class: "relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+              <% else %>
+                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-300 bg-gray-100 cursor-not-allowed">Anterior</span>
+              <% end %>
+              <% if @pagy.next %>
+                <%= link_to "Siguiente", pagy_url_for(@pagy, @pagy.next),
+                            class: "ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+              <% else %>
+                <span class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-300 bg-gray-100 cursor-not-allowed">Siguiente</span>
+              <% end %>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm text-gray-700">
+                  Mostrando
+                  <span class="font-medium"><%= @pagy.from %></span>
+                  a
+                  <span class="font-medium"><%= @pagy.to %></span>
+                  de
+                  <span class="font-medium"><%= @pagy.count %></span>
+                  áreas
+                </p>
+              </div>
+              <div>
+                <%== pagy_nav(@pagy) %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <!-- Empty State -->
+        <div class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No hay áreas configuradas</h3>
+          <p class="mt-1 text-sm text-gray-500">
+            Comienza creando la primera área para organizar a los empleados por departamentos.
+          </p>
+          <div class="mt-6">
+            <%= link_to "Crear Primera Área", new_area_path,
+                        class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

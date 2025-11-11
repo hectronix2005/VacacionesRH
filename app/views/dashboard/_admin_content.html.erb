@@ -1,0 +1,32 @@
+<% roles = current_user.active_roles.dup %>
+<% roles.delete(:admin) %>
+
+<!-- Sección específica de Administrador -->
+<div class="mb-8">
+  <div class="bg-white overflow-hidden shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+        Panel de Administración
+      </h3>
+      <p class="text-sm text-gray-600 mb-4">
+        Herramientas avanzadas de configuración y gestión del sistema
+      </p>
+
+      <div class="flex flex-wrap gap-2">
+        <%= link_to "Configurar Aprobaciones", vacation_approval_configs_path,
+                    class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700" %>
+        <%= link_to "Gestionar Usuarios", users_path,
+                    class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
+        <%= link_to "Ver Todos los Balances", vacation_balances_path,
+                    class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% roles.each do |role| %>
+  <!-- Contenido específico por rol -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <%= render "dashboard/#{role}_content", dashboard_data: @dashboard_data %>
+  </div>
+<% end %>

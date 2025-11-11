@@ -1,0 +1,9 @@
+<%# Partial de avatar reutilizable %>
+<%# Parámetros: user:, size: (opcional px, default 64) %>
+<% size ||= 64 %>
+<div class="rounded-full bg-blue-600 flex items-center justify-center" style="width:<%= size %>px;height:<%= size %>px;">
+  <span class="text-white font-bold" style="font-size:<%= (size * 0.35).round %>px;line-height:1;">
+    <%= user.initials %>
+  </span>
+</div>
+

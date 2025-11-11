@@ -1,0 +1,169 @@
+<div class="min-h-screen bg-gray-50 py-6">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">
+            Balance de Vacaciones - <%= @user.full_name %>
+          </h1>
+          <p class="mt-1 text-sm text-gray-600">
+            Año <%= @vacation_balance.year %>
+          </p>
+        </div>
+        <div class="flex space-x-3">
+          <%= link_to "Editar", edit_vacation_balance_path(@vacation_balance),
+                      class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500" %>
+          <%= link_to "Volver", vacation_balances_path,
+                      class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Balance Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 bg-blue-500 rounded-md flex items-center justify-center">
+                <span class="text-white text-lg font-bold"><%= @vacation_balance.days_available %></span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Días Totales</dt>
+                <dd class="text-lg font-medium text-gray-900"><%= @vacation_balance.days_available %> días</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 bg-red-500 rounded-md flex items-center justify-center">
+                <span class="text-white text-lg font-bold"><%= @vacation_balance.used_days %></span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Días Usados</dt>
+                <dd class="text-lg font-medium text-gray-900"><%= @vacation_balance.used_days %> días</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 bg-<%= @vacation_balance.available_days >= 0 ? 'green' : 'red' %>-500 rounded-md flex items-center justify-center">
+                <span class="text-white text-lg font-bold"><%= @vacation_balance.available_days %></span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Días Disponibles</dt>
+                <dd class="text-lg font-medium text-<%= @vacation_balance.available_days >= 0 ? 'green' : 'red' %>-600">
+                  <%= @vacation_balance.available_days %> días
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Employee Information -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
+      <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Información del Empleado</h3>
+      </div>
+      <div class="border-t border-gray-200">
+        <dl>
+          <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Nombre completo</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @user.full_name %></dd>
+          </div>
+          <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Documento</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @user.document_number %></dd>
+          </div>
+          <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">País</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @user.country.name %></dd>
+          </div>
+          <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Rol</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <%= render 'users/role_badges', user: current_user %>
+            </dd>
+          </div>
+          <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Fecha de contratación</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <%= @user.hire_date.strftime('%d de %B de %Y') if @user.hire_date %>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Vacation Requests for this year -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Solicitudes de Vacaciones</h3>
+      </div>
+      <% if @vacation_requests.any? %>
+        <div class="border-t border-gray-200">
+          <ul role="list" class="divide-y divide-gray-200">
+            <% @vacation_requests.each do |request| %>
+              <li class="px-4 py-4 sm:px-6">
+                <a href="<%= vacation_request_path(request) %>" class="underline text-blue-600">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                          <%= case request.status
+                              when 'pending' then 'bg-yellow-100 text-yellow-800'
+                              when 'approved' then 'bg-green-100 text-green-800'
+                              when 'rejected' then 'bg-red-100 text-red-800'
+                              when 'taken' then 'bg-blue-100 text-blue-800'
+                              else 'bg-gray-100 text-gray-800'
+                              end %>">
+                          <%= request.status.humanize %>
+                        </span>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">
+                          <%= request.start_date.strftime('%d/%m/%Y') %> - <%= request.end_date.strftime('%d/%m/%Y') %>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                          <%= request.days_requested %> días • <%= request.reason.presence || 'Sin motivo especificado' %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-500">
+                      <time datetime="<%= request.created_at.iso8601 %>">
+                        Creada el <%= request.created_at.strftime('%d/%m/%Y') %>
+                      </time>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% else %>
+        <div class="border-t border-gray-200 px-4 py-12 text-center">
+          <p class="text-gray-500">No hay solicitudes de vacaciones para este año.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

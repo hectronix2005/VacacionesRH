@@ -1,0 +1,13 @@
+<div class="space-y-2">
+  <h3 class="text-sm font-medium text-gray-900"><%= t('users.form.roles_label') %></h3>
+  <p class="text-xs text-gray-500"><%= t('users.form.select_roles') %></p>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+    <% User::ROLES.each do |role| %>
+      <div class="flex items-center space-x-2">
+        <%= form.check_box role, id: "user_role_#{role}", class: "h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" %>
+        <%= form.label role, role_label(role), class: "text-sm text-gray-700" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+

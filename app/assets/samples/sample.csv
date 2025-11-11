@@ -1,0 +1,4 @@
+documento,nombre,correo,pais,area,fecha_ingreso,rol,fecha_inicio,fecha_fin,empresa, status
+12345678,Juan Pérez,@algo.com,Colombia,TI,2023-01-15,employee,2023-01-15,2023-01-29,15, Digital, approved
+12345678,Juan Pérez,@algo.com,Colombia,TI,2023-01-15,leader,2023-01-15,2023-01-29,15, Digital, rejected
+12345678,Juan Pérez,@algo.com,Colombia,TI,2023-01-15,hr,2023-01-15,2023-01-29,15, Digital, taken

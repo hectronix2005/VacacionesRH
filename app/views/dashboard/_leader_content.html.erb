@@ -1,0 +1,129 @@
+<!-- Leader Dashboard Content -->
+<!-- Contenido específico para usuarios con rol Leader -->
+
+<!-- Estadísticas del Equipo -->
+<div class="bg-white overflow-hidden shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+      Mi Equipo de Trabajo
+    </h3>
+    <div class="grid grid-cols-1 gap-4">
+      <!-- Tamaño del Equipo -->
+      <div class="flex items-center justify-between p-4 bg-indigo-50 rounded-lg">
+        <div>
+          <p class="text-sm font-medium text-indigo-600">Miembros del Equipo</p>
+          <p class="text-2xl font-bold text-indigo-900">
+            <%= dashboard_data&.dig(:team_size) || 0 %>
+          </p>
+        </div>
+        <div class="h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center">
+          <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Solicitudes Pendientes del Equipo -->
+      <div class="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
+        <div>
+          <p class="text-sm font-medium text-orange-600">Solicitudes por Aprobar</p>
+          <p class="text-2xl font-bold text-orange-900">
+            <%= dashboard_data&.dig(:team_requests_pending) || 0 %>
+          </p>
+        </div>
+        <div class="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center">
+          <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 12l2-2m0 0l2-2m-2 2l-2-2m2 2l2-2"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones Rápidas para Líderes -->
+    <div class="mt-6 flex flex-wrap gap-2">
+      <%= link_to "Ver Mi Equipo", users_path(team: 'true'),
+                  class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" %>
+      <% if (dashboard_data&.dig(:team_requests_pending) || 0) > 0 %>
+        <%= link_to "Aprobar Solicitudes", pending_vacation_requests_path,
+                    class: "inline-flex items-center px-3 py-2 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Estado del Equipo -->
+<div class="bg-white overflow-hidden shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+      Estado del Equipo
+    </h3>
+    
+    <!-- Miembros con Balances Altos -->
+    <% if (dashboard_data&.dig(:team_members_with_alerts) || 0) > 0 %>
+      <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <div class="flex items-center">
+          <svg class="h-5 w-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+          </svg>
+          <div class="flex-1">
+            <h4 class="text-sm font-medium text-yellow-800">Atención Requerida</h4>
+            <p class="text-sm text-yellow-700">
+              <%= dashboard_data[:team_high_balances] %> miembro<%= dashboard_data[:team_high_balances] == 1 ? '' : 's' %>
+              de tu equipo necesita<%= dashboard_data[:team_high_balances] == 1 ? '' : 'n' %> tomar vacaciones.
+            </p>
+          </div>
+        </div>
+        <div class="mt-3">
+          <%= link_to "Ver Detalles", users_path(team: 'true', alert: 'true'),
+                      class: "text-sm font-medium text-yellow-600 hover:text-yellow-800" %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Estado General del Equipo -->
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-sm font-medium text-gray-500">Solicitudes Activas</span>
+        <span class="text-sm text-gray-900">
+          <%= dashboard_data&.dig(:team_requests_pending) || 0 %> pendiente<%= (dashboard_data&.dig(:team_requests_pending) || 0) == 1 ? '' : 's' %>
+        </span>
+      </div>
+      
+      <div class="flex items-center justify-between">
+        <span class="text-sm font-medium text-gray-500">Equipo Total</span>
+        <span class="text-sm text-gray-900">
+          <%= dashboard_data&.dig(:team_size) || 0 %> persona<%= (dashboard_data&.dig(:team_size) || 0) == 1 ? '' : 's' %>
+        </span>
+      </div>
+
+      <% if (dashboard_data&.dig(:team_members_with_alerts) || 0) > 0 %>
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-gray-500">Con Alertas</span>
+          <span class="text-sm text-yellow-600 font-medium">
+            <%= dashboard_data[:team_members_with_alerts] %> persona<%= dashboard_data[:team_members_with_alerts] == 1 ? '' : 's' %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Herramientas de Liderazgo -->
+    <div class="mt-6 pt-6 border-t border-gray-200">
+      <h4 class="text-sm font-medium text-gray-900 mb-3">Herramientas de Gestión</h4>
+      <div class="grid grid-cols-1 gap-2">
+        <%= link_to vacation_requests_path(team: 'true'), class: "text-sm text-blue-600 hover:text-blue-800 flex items-center" do %>
+          <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          Ver calendario del equipo
+        <% end %>
+        
+        <%= link_to vacation_requests_path(approved_by: current_user.id), class: "text-sm text-blue-600 hover:text-blue-800 flex items-center" do %>
+          <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          Revisiones realizadas
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

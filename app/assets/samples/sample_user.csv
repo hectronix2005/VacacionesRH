@@ -1,0 +1,3 @@
+documento,correo,nombre,fecha_ingreso,pais,area,empresa,cargo,rol,lider_documento,dias_trabajados
+12345678,juan@empresa.com,Juan Pérez,2023-01-15,Colombia,Desarrollo,Mi Empresa,Desarrollador,employee,87654321,"monday,tuesday,wednesday,thursday,friday"
+87654321,maria@empresa.com,María García,2022-06-01,Colombia,Desarrollo,Mi Empresa,Líder Técnico,leader,,"monday,tuesday,wednesday,thursday,friday,saturday"

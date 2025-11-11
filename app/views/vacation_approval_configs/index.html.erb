@@ -1,0 +1,117 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Configuración de Aprobaciones</h1>
+    <p class="text-gray-600">Gestiona los roles y requisitos para aprobar solicitudes de vacaciones</p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border mb-6">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-xl font-semibold text-gray-800">Configuraciones Actuales</h2>
+      <div class="space-x-2">
+        <%= link_to "Nueva Configuración", new_vacation_approval_config_path,
+            class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium" %>
+        <% unless @configs.exists? %>
+          <%= link_to "Configuración por Defecto", setup_defaults_vacation_approval_configs_path,
+              method: :post,
+              class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium",
+              data: { confirm: "¿Establecer configuración por defecto?" } %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="p-6">
+      <% if @configs.any? %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orden</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requerido</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Min. Aprobaciones</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @configs.each do |config| %>
+                <tr class="<%= 'opacity-50' unless config.active? %>">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                      <%= config.order_position %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">
+                      <%= config.role_display_name %>
+                    </div>
+                    <div class="text-sm text-gray-500"><%= config.role %></div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <% if config.required? %>
+                      <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                        Requerido
+                      </span>
+                    <% else %>
+                      <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                        Opcional
+                      </span>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= config.minimum_approvals %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <% if config.active? %>
+                      <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                        Activo
+                      </span>
+                    <% else %>
+                      <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                        Inactivo
+                      </span>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-900">
+                    <%= config.description.present? ? truncate(config.description, length: 50) : '-' %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                    <%= link_to "Editar", edit_vacation_approval_config_path(config),
+                        class: "text-blue-600 hover:text-blue-900" %>
+                    <% if config.can_be_deleted? %>
+                      <%= link_to "Eliminar", vacation_approval_config_path(config),
+                          method: :delete,
+                          data: { confirm: "¿Estás seguro de eliminar esta configuración?" },
+                          class: "text-red-600 hover:text-red-900" %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="text-center py-12">
+          <div class="mx-auto h-12 w-12 text-gray-400 mb-4">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">No hay configuraciones</h3>
+          <p class="text-gray-500 mb-4">Comienza creando una configuración o establece la configuración por defecto</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-blue-900 mb-2">Información</h3>
+    <ul class="text-blue-800 space-y-2 text-sm">
+      <li>• El <strong>orden</strong> determina la secuencia en que se deben aprobar las solicitudes</li>
+      <li>• Los roles <strong>requeridos</strong> deben aprobar obligatoriamente todas las solicitudes</li>
+      <li>• <strong>Mínimo de aprobaciones</strong> indica cuántas aprobaciones se necesitan de ese rol</li>
+      <li>• Solo los roles <strong>activos</strong> participan en el proceso de aprobación</li>
+    </ul>
+  </div>
+</div>

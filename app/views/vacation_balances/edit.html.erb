@@ -1,0 +1,99 @@
+<div class="min-h-screen bg-gray-50 py-6">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">
+            Editar Balance de Vacaciones
+          </h1>
+          <p class="mt-1 text-sm text-blue-600 underline">
+            <a href="<%= user_path(@vacation_balance.user) %>"><%= @vacation_balance.user.full_name %> - Año <%= @vacation_balance.year %></a>
+          </p>
+        </div>
+        <div class="flex space-x-3">
+          <%= link_to "Ver", vacation_balance_path(@vacation_balance),
+                      class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          <%= link_to "Volver", vacation_balances_path,
+                      class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Current Balance Info -->
+    <div class="bg-white shadow rounded-lg mb-6">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Balance Actual</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600"><%= @vacation_balance.days_available %></div>
+            <div class="text-sm text-gray-500">Días Totales</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-red-600"><%= @vacation_balance.used_days %></div>
+            <div class="text-sm text-gray-500">Días Usados</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-<%= @vacation_balance.available_days >= 0 ? 'green' : 'red' %>-600">
+              <%= @vacation_balance.available_days %>
+            </div>
+            <div class="text-sm text-gray-500">Días Disponibles</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <%= render 'form',
+                   vacation_balance: @vacation_balance,
+                   users: @users,
+                   cancel_path: vacation_balance_path(@vacation_balance),
+                   submit_text: "Actualizar Balance" %>
+      </div>
+    </div>
+
+    <!-- Warning -->
+    <div class="mt-6 bg-yellow-50 rounded-lg p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            <strong>Cuidado:</strong> Cambiar estos valores puede afectar las solicitudes de vacaciones pendientes o aprobadas del empleado.
+            Asegúrate de que los cambios sean consistentes con el historial de vacaciones.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Update available days calculation in real time
+document.addEventListener('DOMContentLoaded', function() {
+  const totalDaysField = document.getElementById('vacation_balance_total_days');
+  const usedDaysField = document.getElementById('vacation_balance_used_days');
+  const availableDaysSpan = document.getElementById('available-days');
+
+  function updateAvailableDays() {
+    const totalDays = parseFloat(totalDaysField.value) || 0;
+    const usedDays = parseFloat(usedDaysField.value) || 0;
+    const availableDays = totalDays - usedDays;
+
+    availableDaysSpan.textContent = availableDays;
+
+    // Update color based on available days
+    availableDaysSpan.className = availableDays >= 0 ? 'text-green-600' : 'text-red-600';
+  }
+
+  if (totalDaysField && usedDaysField && availableDaysSpan) {
+    totalDaysField.addEventListener('input', updateAvailableDays);
+    usedDaysField.addEventListener('input', updateAvailableDays);
+  }
+});
+</script>

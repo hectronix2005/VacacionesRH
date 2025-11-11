@@ -1,0 +1,121 @@
+<!-- HR Dashboard Content -->
+<!-- Contenido específico para usuarios con rol HR -->
+
+<!-- Estadísticas de Gestión de Personal -->
+<div class="bg-white overflow-hidden shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+      Gestión de Personal
+    </h3>
+    <div class="grid grid-cols-1 gap-4">
+      <!-- Total de Usuarios Activos -->
+      <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+        <div>
+          <p class="text-sm font-medium text-blue-600">Usuarios Activos</p>
+          <p class="text-2xl font-bold text-blue-900">
+            <%= dashboard_data&.dig(:total_users) || 0 %>
+          </p>
+        </div>
+        <div class="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
+          <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Solicitudes Pendientes de Aprobación -->
+      <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg">
+        <div>
+          <p class="text-sm font-medium text-yellow-600">Aprobaciones Pendientes</p>
+          <p class="text-2xl font-bold text-yellow-900">
+            <%= dashboard_data&.dig(:total_pending_requests) || 0 %>
+          </p>
+        </div>
+        <div class="h-12 w-12 bg-yellow-100 rounded-full flex items-center justify-center">
+          <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones Rápidas para HR -->
+    <div class="mt-6 flex flex-wrap gap-2">
+      <%= link_to "Gestionar Usuarios", users_path,
+                  class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
+      <%= link_to "Config. Aprobaciones", vacation_approval_configs_path,
+                  class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" %>
+      <% if (dashboard_data&.dig(:total_pending_requests) || 0) > 0 %>
+        <%= link_to "Ver Pendientes", pending_vacation_requests_path,
+                    class: "inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Distribución por Países -->
+<div class="bg-white overflow-hidden shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+      Distribución por Países
+    </h3>
+    <div class="space-y-3">
+      <% countries_summary = dashboard_data&.dig(:country_distribution) || {} %>
+      <% if countries_summary.any? %>
+        <% countries_summary.each do |country, count| %>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <% if country == 'Colombia' %>
+                  <div class="h-8 w-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                    <span class="text-xs font-bold text-white">CO</span>
+                  </div>
+                <% elsif country == 'México' %>
+                  <div class="h-8 w-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <span class="text-xs font-bold text-white">MX</span>
+                  </div>
+                <% else %>
+                  <div class="h-8 w-8 bg-gray-400 rounded-full flex items-center justify-center">
+                    <span class="text-xs font-bold text-white"><%= country.first(2).upcase %></span>
+                  </div>
+                <% end %>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium text-gray-900"><%= country %></p>
+              </div>
+            </div>
+            <div class="text-sm font-medium text-gray-500">
+              <%= count %> usuario<%= count == 1 ? '' : 's' %>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-sm text-gray-500 text-center py-4">No hay datos disponibles</p>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Usuarios que Requieren Atención -->
+<% if dashboard_data&.dig(:users_needing_attention)&.> 0 %>
+  <div class="bg-white overflow-hidden shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4 flex items-center">
+        <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+        Usuarios que Requieren Atención
+      </h3>
+      <p class="text-sm text-gray-600 mb-4">
+        <%= dashboard_data[:users_needing_attention] %> usuario<%= dashboard_data[:users_with_alerts] == 1 ? '' : 's' %>
+        con días de vacaciones acumulados o sin uso.
+      </p>
+      <div class="flex space-x-3">
+        <%= link_to "Ver Detalles", users_path(alert: 'true'),
+                    class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700" %>
+        <%= link_to "Generar Reporte", users_path(format: :csv, alert: 'true'),
+                    class: "inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+      </div>
+    </div>
+  </div>
+<% end %>

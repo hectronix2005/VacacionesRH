@@ -1,0 +1,48 @@
+# SQLite. Versions 3.8.0 and up are supported.
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem "sqlite3"
+#
+default: &default
+  database: "picap_rh_db_<%= Rails.env %>"
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  primary:
+    <<: *default
+  cache:
+    <<: *default
+    migrations_paths: db/migrate
+  queue:
+    <<: *default
+    migrations_paths: db/migrate
+  cable:
+    <<: *default
+    migrations_paths: db/migrate
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+
+
+# Store production database in the storage/ directory, which by default
+# is mounted as a persistent Docker volume in config/deploy.yml.
+production:
+  primary:
+    <<: *default
+  cache:
+    <<: *default
+    migrations_paths: db/migrate
+  queue:
+    <<: *default
+    migrations_paths: db/migrate
+  cable:
+    <<: *default
+    migrations_paths: db/migrate

@@ -1,0 +1,132 @@
+<%= form_with model: vacation_balance, local: true, class: "space-y-6" do |form| %>
+  <% if vacation_balance.errors.any? %>
+    <div class="rounded-md bg-red-50 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            Hay errores que corregir:
+          </h3>
+          <div class="mt-2 text-sm text-red-700">
+            <ul class="list-disc pl-5 space-y-1">
+              <% vacation_balance.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :user_ids, "Usuario", class: "block text-sm font-medium text-gray-700" %>
+    <% user = vacation_balance&.user %>
+    <% list = [["#{user&.name} - #{user&.email} - #{user&.document_number}", user&.id]] if user %>
+    <%= form.select :user_ids,
+                    options_for_select([['Seleccionar empleado', '']] + (list || []), vacation_balance.user_id),
+                    { prompt: false  },
+                    {
+                      disabled: vacation_balance.persisted?,
+                      class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm",
+                      data: {
+                        controller: "tom-select",
+                        tom_select_url_value: search_users_path,
+                        tom_select_placeholder_value: "Buscar usuario...",
+                      }
+                    } %>
+    <% if vacation_balance.errors[:user].any? %>
+      <p class="mt-2 text-sm text-red-600"><%= vacation_balance.errors[:user].first %></p>
+    <% end %>
+  </div>
+
+  <p class="mt-2 text-sm text-blue-600">Estos campos se calcularán de acuerdo a la fecha de ingreso y vacaciones solicitadas. ⬇️</p>
+
+  <div>
+    <%= form.label :worked_days, "Días trabajados", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.number_field :worked_days,
+                          class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
+                          min: 0,
+                          step: 0.5,
+                          placeholder: "Ej: 21", disabled: true %>
+    <% if vacation_balance.errors[:worked_days].any? %>
+      <p class="mt-2 text-sm text-red-600"><%= vacation_balance.errors[:worked_days].first %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.label :days_to_enjoy, "Días a disfrutar", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.number_field :days_to_enjoy,
+                          class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
+                          min: 0,
+                          step: 0.5,
+                          placeholder: "Ej: 21", disabled: true %>
+    <% if vacation_balance.errors[:days_to_enjoy].any? %>
+      <p class="mt-2 text-sm text-red-600"><%= vacation_balance.errors[:days_to_enjoy].first %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.label :days_available, "Días disponibles", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.number_field :days_available,
+                          class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
+                          min: 0,
+                          step: 0.5,
+                          placeholder: "Ej: 21", disabled: true %>
+    <% if vacation_balance.errors[:days_available].any? %>
+      <p class="mt-2 text-sm text-red-600"><%= vacation_balance.errors[:days_available].first %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.label :days_scheduled, "Días programados", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.number_field :days_scheduled,
+                          class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
+                          min: 0,
+                          step: 0.5,
+                          placeholder: "Ej: 21", disabled: true %>
+    <% if vacation_balance.errors[:days_scheduled].any? %>
+      <p class="mt-2 text-sm text-red-600"><%= vacation_balance.errors[:days_scheduled].first %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.label :used_days, "Días Usados", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.number_field :used_days,
+                          class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
+                          min: 0,
+                          step: 0.5,
+                          value: vacation_balance.used_days || 0,
+                          placeholder: "Ej: 5", disabled: true %>
+    <p class="mt-1 text-sm text-gray-500">
+      Días de vacaciones ya utilizados por el empleado este año.
+    </p>
+    <% if vacation_balance.errors[:used_days].any? %>
+      <p class="mt-2 text-sm text-red-600"><%= vacation_balance.errors[:used_days].first %></p>
+    <% end %>
+  </div>
+
+  <!-- Calculated fields display (only for edit) -->
+  <% if vacation_balance.persisted? %>
+    <div class="bg-gray-50 rounded-lg p-4">
+      <h4 class="text-sm font-medium text-gray-900 mb-2">Días Disponibles (Calculado)</h4>
+      <div class="text-lg font-semibold text-<%= vacation_balance.available_days >= 0 ? 'green' : 'red' %>-600">
+        <span id="available-days"><%= vacation_balance.available_days %></span> días
+      </div>
+      <p class="text-sm text-gray-500 mt-1">
+        Se calcula automáticamente como: Días Totales - Días Usados
+      </p>
+    </div>
+  <% end %>
+
+  <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+    <%= link_to "Cancelar", cancel_path,
+                class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    <%= form.submit submit_text,
+                   class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+  </div>
+<% end %>
