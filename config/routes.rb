@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # Ignore Chrome DevTools requests
+  get "/.well-known/appspecific/com.chrome.devtools.json", to: proc { [204, {}, []] }
+
   resources :sessions, only: [ :new, :create ] do
     delete :logout, on: :collection, to: "sessions#destroy"
     get :login, on: :collection, to: "sessions#new"

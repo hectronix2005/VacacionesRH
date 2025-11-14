@@ -22,8 +22,11 @@ class DashboardController < ApplicationController
   end
 
   def load_employee_dashboard_data
-    used_days = current_user.vacation_balances.sum(:used_days)
-    days_available = current_user.current_year_balance.days_available
+    balance = current_user.current_year_balance
+    return default_employee_data unless balance
+
+    used_days = balance.used_days
+    days_available = balance.days_available
     {
       pending_requests: current_user.vacation_requests.pending.count,
       used_days: used_days,
@@ -32,8 +35,17 @@ class DashboardController < ApplicationController
     }
   end
 
+  def default_employee_data
+    {
+      pending_requests: 0,
+      used_days: 0,
+      days_available: 0,
+      usage_percentage: 0
+    }
+  end
+
   def load_leader_dashboard_data
-    subordinates = current_user.subordinates.active
+    subordinates = current_user.subordinates.active.includes(:vacation_balances)
 
     {
       team_requests_pending: VacationRequest.joins(:user)
@@ -41,7 +53,7 @@ class DashboardController < ApplicationController
                                            .pending
                                            .count,
       team_size: subordinates.count,
-      team_members_with_alerts: subordinates.select(&:needs_vacation_alert?).count
+      team_members_with_alerts: subordinates.count { |s| s.needs_vacation_alert? }
     }
   end
 
@@ -50,7 +62,7 @@ class DashboardController < ApplicationController
       total_pending_requests: VacationRequest.pending.count,
       total_users: User.active.count,
       users_needing_attention: User.active.with_high_vacation_balance.count,
-      recent_new_users: User.active.order(created_at: :desc).limit(5),
+      recent_new_users: User.active.includes(:country, :area).order(created_at: :desc).limit(5),
       monthly_stats: monthly_vacation_stats,
       country_distribution: Country.joins(:users)
                                    .where(users: { active: true })

@@ -31,27 +31,35 @@ class UserStatsService
   def team_stats_if_leader
     return {} unless @user.leader? || @user.admin?
 
-    subordinates = @user.subordinates.active
+    subordinates = @user.subordinates.active.includes(:vacation_balances)
+
+    # Optimized query for pending requests
+    team_pending_count = VacationRequest
+                          .joins(:user)
+                          .where(users: { lead_id: @user.id, active: true })
+                          .where(status: 'pending')
+                          .count
+
     {
       team_size: subordinates.count,
-      team_pending_requests: subordinates.joins(:vacation_requests)
-                                        .where(vacation_requests: { status: 'pending' })
-                                        .count,
-      team_high_balances: subordinates.select(&:needs_vacation_alert?).count
+      team_pending_requests: team_pending_count,
+      team_high_balances: subordinates.count { |s| s.needs_vacation_alert? }
     }
   end
 
   def hr_stats_if_applicable
     return default_hr_stats unless @user.hr? || @user.admin?
 
-    users_needing_attention = User.active.select(&:needs_vacation_alert?) || []
+    users_needing_attention = User.active
+                                  .includes(:vacation_balances)
+                                  .select(&:needs_vacation_alert?)
 
     {
       total_users: User.active.count,
       pending_approvals: VacationRequest.pending.count,
       users_with_alerts: users_needing_attention.count,
       users_needing_attention: users_needing_attention,
-      recent_requests: VacationRequest.recent.limit(5),
+      recent_requests: VacationRequest.includes(:user).order(created_at: :desc).limit(5),
       countries_summary: countries_summary
     }
   end
@@ -71,9 +79,11 @@ class UserStatsService
 
     # Alertas de equipo para líderes
     if @user.admin? || @user.leader?
-      pending_team_requests = @user.subordinates.joins(:vacation_requests)
-                                   .where(vacation_requests: { status: 'pending' })
-                                   .count
+      pending_team_requests = VacationRequest
+                               .joins(:user)
+                               .where(users: { lead_id: @user.id, active: true })
+                               .where(status: 'pending')
+                               .count
       if pending_team_requests > 0
         alerts << {
           type: 'info',

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_09_192739) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_14_135413) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -192,6 +192,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_192739) do
     t.jsonb "working_days", default: {"friday" => false, "monday" => false, "sunday" => false, "tuesday" => false, "saturday" => false, "thursday" => false, "wednesday" => false}
     t.string "company", default: ""
     t.string "position", default: ""
+    t.index ["active", "country_id"], name: "index_users_on_active_and_country_id"
+    t.index ["active", "lead_id"], name: "index_users_on_active_and_lead_id"
     t.index ["area_id"], name: "index_users_on_area_id"
     t.index ["country_id"], name: "index_users_on_country_id"
     t.index ["document_number"], name: "index_users_on_document_number", unique: true
@@ -240,6 +242,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_192739) do
     t.integer "days_scheduled", default: 0
     t.index ["user_id", "year"], name: "index_vacation_balances_on_user_id_and_year", unique: true
     t.index ["user_id"], name: "index_vacation_balances_on_user_id"
+    t.index ["year"], name: "index_vacation_balances_on_year"
   end
 
   create_table "vacation_requests", force: :cascade do |t|
@@ -256,8 +259,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_192739) do
     t.datetime "updated_at", null: false
     t.string "company", default: ""
     t.index ["approved_by_id"], name: "index_vacation_requests_on_approved_by_id"
+    t.index ["start_date", "end_date"], name: "index_vacation_requests_on_start_date_and_end_date"
+    t.index ["status", "created_at"], name: "index_vacation_requests_on_status_and_created_at"
     t.index ["status"], name: "index_vacation_requests_on_status"
     t.index ["user_id", "start_date"], name: "index_vacation_requests_on_user_id_and_start_date"
+    t.index ["user_id", "status", "created_at"], name: "index_vacation_requests_on_user_status_created"
+    t.index ["user_id", "status"], name: "index_vacation_requests_on_user_id_and_status"
     t.index ["user_id"], name: "index_vacation_requests_on_user_id"
   end
 
