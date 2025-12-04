@@ -23,7 +23,7 @@ gem "jbuilder"
 gem "bcrypt", "~> 3.1.7"
 
 # Agnostic pagination in plain Ruby [https://github.com/ddnexus/pagy]
-gem "pagy", "~> 8.6"
+gem "pagy", "~> 43.2"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
